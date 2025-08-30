@@ -43,7 +43,7 @@ jobs:
 
       # 4. 公開用のファイルをビルド（作成）する
       - name: Build
-        run: npm run build
+        run: npx vite build # ★★★ ここを変更しました ★★★
 
       # 5. ビルドされた成果物（distフォルダ）をアップロードする準備
       - name: Setup Pages
@@ -59,3 +59,4 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
