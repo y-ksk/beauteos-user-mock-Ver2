@@ -1,6 +1,6 @@
 import React from "react";
 // ★★★ ここを変更しました ★★★
-import { BrowserRouter, Routes, Route, Outlet, HashRouter } from "react-router-dom";
+import { Routes, Route, Outlet, HashRouter } from "react-router-dom";
 import MyPage from "./pages/MyPage.jsx";
 import PouchPage from "./pages/PouchPage.jsx";
 import CosmeticListPage from "./pages/CosmeticListPage.jsx";
@@ -23,7 +23,6 @@ function Layout() {
 
 export default function App() {
   return (
-    // ★★★ ここを変更しました ★★★
     <HashRouter>
       <Routes>
         <Route path="/" element={<Layout />}>
@@ -49,7 +48,8 @@ function Header() {
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-warm-gray text-white">
             B
           </div>
-          <a href="/beauteos-user-mock-Ver2/" className="text-lg font-semibold tracking-tight text-warm-gray">BeauteOS</a>
+          {/* ★★★ ここを変更しました ★★★ */}
+          <a href="#/" className="text-lg font-semibold tracking-tight text-warm-gray">BeauteOS</a>
         </div>
       </div>
     </header>
