@@ -1,6 +1,6 @@
 import React from "react";
 // ★★★ ここを変更しました ★★★
-import { Routes, Route, Outlet, HashRouter } from "react-router-dom";
+import { Routes, Route, Outlet, HashRouter, Link } from "react-router-dom";
 import MyPage from "./pages/MyPage.jsx";
 import PouchPage from "./pages/PouchPage.jsx";
 import CosmeticListPage from "./pages/CosmeticListPage.jsx";
@@ -49,7 +49,7 @@ function Header() {
             B
           </div>
           {/* ★★★ ここを変更しました ★★★ */}
-          <a href="#/" className="text-lg font-semibold tracking-tight text-warm-gray">BeauteOS</a>
+          <Link to="/" className="text-lg font-semibold tracking-tight text-warm-gray">BeauteOS</Link>
         </div>
       </div>
     </header>
