@@ -8,3 +8,4 @@ export default defineConfig({
   // GitHub Pagesで公開するリポジトリ名を指定します
   base: "/beauteos-user-mock-Ver2/", 
 })
+
