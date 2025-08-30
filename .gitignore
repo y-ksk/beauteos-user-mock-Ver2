@@ -1,0 +1,56 @@
+# dependencies
+/node_modules
+
+# build output
+/dist
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# misc
+.DS_Store
+*.pem
+
+# local env files
+.env.local
+.env.*.local
+
+# cache
+.vite
+.npm
+.cache
+
+
+#### **ステップ2：変更をセーブし、GitHubにアップロードする**
+
+`.gitignore`を作成したことで、Gitは賢くなり、不要なファイルを無視してくれるようになります。
+それでは、**最後のアップロード**を行いましょう！
+
+* ターミナルで、以下の3つのコマンドを**1行ずつ、順番に**実行してください。
+
+    ```bash
+    # 1. 必要なファイルだけを選択する（.gitignoreが不要なファイルを無視してくれる）
+    git add .
+    ```
+    ```bash
+    # 2. 「自動化レシピを追加した」という記録を残す
+    git commit -m "Add deploy workflow and .gitignore"
+    ```
+    ```bash
+    # 3. GitHubに最終版をアップロードする
+    git push
+    ```
+
+---
+
+### ### これで、すべて完了です！
+
+`git push`が成功すれば、あなたの手元の作業は**すべて完了**です！
+
+あとは、GitHubが自動的にサイトの公開作業を行ってくれます。
+ブラウザであなたのリポジトリの「**Actions**」タブを開き、ワークフローが緑色のチェックマークになるのを見守りましょう。
+
+それが完了すれば、あなたのサイトは完全に新しいバージョンに更新されています！

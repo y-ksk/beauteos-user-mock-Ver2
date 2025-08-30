@@ -1,0 +1,61 @@
+# GitHub Pagesへの自動デプロイを設定するワークフロー
+
+name: Deploy to GitHub Pages
+
+# このワークフローが実行されるタイミングを指定
+on:
+  # mainブランチにpushされた時に実行
+  push:
+    branches:
+      - main
+  # Actionsタブから手動で実行することも可能にする
+  workflow_dispatch:
+
+# ワークフローの実行に必要な権限を設定
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 1つのワークフローは、1つ以上の「ジョブ」で構成される
+jobs:
+  # build-and-deploy という名前のジョブを定義
+  build-and-deploy:
+    # ジョブを実行する仮想環境の種類を指定（WindowsではなくUbuntu）
+    runs-on: ubuntu-latest
+
+    # ジョブの一連の手順を定義
+    steps:
+      # 1. リポジトリのコードをチェックアウト（ダウンロード）する
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 2. Node.jsの環境をセットアップする
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Node.jsのバージョンを指定
+          cache: 'npm'
+
+      # 3. 必要なパッケージをインストールする
+      - name: Install dependencies
+        run: npm install
+
+      # 4. 公開用のファイルをビルド（作成）する
+      - name: Build
+        run: npm run build
+
+      # 5. ビルドされた成果物（distフォルダ）をアップロードする準備
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      # 6. ビルド成果物をアーティファクトとしてアップロードする
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './dist'
+
+      # 7. GitHub Pagesにデプロイ（公開）する
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
