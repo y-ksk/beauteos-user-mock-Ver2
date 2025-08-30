@@ -1,7 +1,6 @@
 import React from "react";
-import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
-
-// Pages
+// ★★★ ここを変更しました ★★★
+import { BrowserRouter, Routes, Route, Outlet, HashRouter } from "react-router-dom";
 import MyPage from "./pages/MyPage.jsx";
 import PouchPage from "./pages/PouchPage.jsx";
 import CosmeticListPage from "./pages/CosmeticListPage.jsx";
@@ -10,6 +9,7 @@ import ReviewListPage from "./pages/ReviewListPage.jsx";
 import SalonPage from "./pages/SalonPage.jsx";
 import BeautyLogPage from "./pages/BeautyLogPage.jsx";
 
+// 全ページ共通のレイアウト
 function Layout() {
   return (
     <div className="min-h-screen bg-cream-yellow text-warm-gray">
@@ -23,7 +23,8 @@ function Layout() {
 
 export default function App() {
   return (
-    <BrowserRouter>
+    // ★★★ ここを変更しました ★★★
+    <HashRouter>
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<MyPage />} />
@@ -32,20 +33,23 @@ export default function App() {
           <Route path="add-cosmetic" element={<AddCosmeticPage />} />
           <Route path="reviews" element={<ReviewListPage />} />
           <Route path="salon/:salonId" element={<SalonPage />} />
-          <Route path="beauty-log" element={<BeautyLogPage />} />
+          <Route path="log" element={<BeautyLogPage />} />
         </Route>
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
+// 簡単のため、Headerコンポーネントもここに記載します
 function Header() {
   return (
     <header className="sticky top-0 z-20 border-b border-yellow-200 bg-cream-yellow/80 backdrop-blur">
       <div className="mx-auto flex max-w-[1400px] items-center justify-between px-3 py-3 md:px-6">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-warm-gray text-white font-bold">B</div>
-          <a href="/" className="text-lg font-semibold tracking-tight text-warm-gray">BeauteOS</a>
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-warm-gray text-white">
+            B
+          </div>
+          <a href="/beauteos-user-mock-Ver2/" className="text-lg font-semibold tracking-tight text-warm-gray">BeauteOS</a>
         </div>
       </div>
     </header>
