@@ -37,13 +37,13 @@ jobs:
           node-version: '20' # Node.jsのバージョンを指定
           cache: 'npm'
 
-      # 3. 必要なパッケージをインストールする
+      # 3. 必要なパッケージを厳密にインストールする
       - name: Install dependencies
-        run: npm install
+        run: npm ci # ★★★ ここを install から ci に変更しました ★★★
 
       # 4. 公開用のファイルをビルド（作成）する
       - name: Build
-        run: npx vite build # ★★★ ここを変更しました ★★★
+        run: npx vite build 
 
       # 5. ビルドされた成果物（distフォルダ）をアップロードする準備
       - name: Setup Pages
