@@ -1,73 +1,119 @@
 import React, { useState, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 
-// ダミーのコスメデータ
-const dummyPouch = [
-  { id: 1, name: 'ピュアセラム', usagePerDay: 0.5 }, // 1日0.5%消費すると仮定
-  { id: 2, name: 'ナイトリペアクリーム', usagePerDay: 0.4 },
-  { id: 3, name: 'UVプロテクター', usagePerDay: 0.7 },
-  { id: 4, name: 'ルミナスファンデーション', usagePerDay: 0.3 },
+// モックデータ: 日付をキーにしたコスメ使用ログ
+const beautyLogData = {
+  '2025-09-01': [ { id: 1, name: 'ピュアセラム', emoji: '💧' }],
+  '2025-09-03': [ { id: 1, name: 'ピュアセラム', emoji: '💧' }, { id: 2, name: 'ナイトリペアクリーム', emoji: '🌙' }],
+  '2025-09-04': [ { id: 3, name: 'UVプロテクター', emoji: '☀️' }],
+  '2025-09-05': [ { id: 1, name: 'ピュアセラム', emoji: '💧' }, { id: 3, name: 'UVプロテクター', emoji: '☀️' } ],
+};
+
+// モックデータ: ユーザーがポーチに持っているコスメ
+const userCosmetics = [
+    { id: 1, name: 'ピュアセラム', emoji: '💧' },
+    { id: 2, name: 'ナイトリペアクリーム', emoji: '🌙' },
+    { id: 3, name: 'UVプロテクター', emoji: '☀️' },
+    { id: 4, name: '集中ケアヘアマスク', emoji: '💆‍♀️' }
 ];
 
 export default function BeautyLogPage() {
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [usedCosmetics, setUsedCosmetics] = useState({});
+  // 注: このモックでは簡単のため、月をまたいだ表示は考慮していません
+  const [currentDate, setCurrentDate] = useState(new Date(2025, 8, 1)); // 2025年9月
+  const [selectedCosmetics, setSelectedCosmetics] = useState({});
+  const [toast, setToast] = useState('');
 
-  const handleCheckboxChange = (cosmeticId) => {
-    setUsedCosmetics(prev => ({
-      ...prev,
-      [cosmeticId]: !prev[cosmeticId]
-    }));
-  };
-  
-  const handleSaveLog = () => {
-    // ここでデータを保存するロジックを実行
-    // 今回はアラートで表示するモックアップ
-    const usedItems = dummyPouch.filter(c => usedCosmetics[c.id]).map(c => c.name);
-    alert(`${selectedDate.toLocaleDateString()}のログを保存しました！\n使用アイテム: ${usedItems.join(', ')}\n\n※この操作で各コスメの残量が自動計算されます。`);
+  const today = new Date();
+  today.setHours(0,0,0,0);
+
+  const daysInMonth = useMemo(() => {
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    const date = new Date(year, month, 1);
+    const days = [];
+    while (date.getMonth() === month) {
+      days.push(new Date(date));
+      date.setDate(date.getDate() + 1);
+    }
+    return days;
+  }, [currentDate]);
+
+  const handleLogSubmit = () => {
+    const selectedIds = Object.keys(selectedCosmetics).filter(id => selectedCosmetics[id]);
+    if (selectedIds.length === 0) {
+      setToast('コスメが選択されていません。');
+      setTimeout(() => setToast(''), 2000);
+      return;
+    }
+    // ここで実際にデータを保存する処理を呼び出す（今回はモックなので何もしない）
+    setToast('今日の美容ログを記録しました！');
+    setTimeout(() => setToast(''), 2000);
+    setSelectedCosmetics({}); // チェックボックスをリセット
   };
 
   return (
-    <div className="p-4 md:p-6 grid md:grid-cols-3 gap-6">
-      {/* カレンダー */}
-      <div className="md:col-span-2 bg-white p-6 rounded-2xl shadow-sm">
-        <h1 className="text-2xl font-bold tracking-tight">美容ログ</h1>
-        <p className="text-warm-gray-500 mt-1">{selectedDate.getFullYear()}年 {selectedDate.getMonth() + 1}月</p>
-        <Calendar date={selectedDate} onDateClick={setSelectedDate} />
+    <div className="p-4 md:p-6">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-warm-gray">美容ログ</h1>
+        <Link to="/" className="text-sm font-semibold text-coral-pink hover:underline">マイページに戻る</Link>
       </div>
       
-      {/* ログ入力 */}
-      <div className="bg-white p-6 rounded-2xl shadow-sm">
-        <h2 className="font-semibold">{selectedDate.toLocaleDateString()} に使ったコスメ</h2>
-        <p className="text-sm text-warm-gray-500">チェックを入れて記録しましょう。</p>
-        <div className="mt-4 space-y-3 max-h-96 overflow-y-auto pr-2">
-          {dummyPouch.map(cosmetic => (
-            <label key={cosmetic.id} className="flex items-center gap-3 p-3 rounded-lg hover:bg-cream-yellow transition-colors">
-              <input type="checkbox" checked={!!usedCosmetics[cosmetic.id]} onChange={() => handleCheckboxChange(cosmetic.id)} className="h-5 w-5 rounded border-yellow-300 text-coral-pink focus:ring-coral-pink" />
-              <span className="font-medium text-sm">{cosmetic.name}</span>
-            </label>
-          ))}
+      <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Calendar View */}
+        <div className="lg:col-span-2 bg-white p-4 rounded-2xl shadow-sm">
+            <div className="text-center font-bold text-lg text-warm-gray mb-4">
+                {`${currentDate.getFullYear()}年 ${currentDate.getMonth() + 1}月`}
+            </div>
+            <div className="grid grid-cols-7 gap-1 text-center text-xs text-warm-gray-500 mb-2">
+                {['日', '月', '火', '水', '木', '金', '土'].map(day => <div key={day}>{day}</div>)}
+            </div>
+            <div className="grid grid-cols-7 gap-1">
+                {daysInMonth.map(day => {
+                    const dateString = `${day.getFullYear()}-${String(day.getMonth() + 1).padStart(2, '0')}-${String(day.getDate()).padStart(2, '0')}`;
+                    const logForDay = beautyLogData[dateString] || [];
+                    const isToday = day.getTime() === today.getTime();
+                    return (
+                        <div key={day.toISOString()} className={`aspect-square border rounded-lg p-1 flex flex-col ${isToday ? 'border-coral-pink' : 'border-yellow-200'}`}>
+                            <span className={`font-semibold ${isToday ? 'text-coral-pink' : 'text-warm-gray-500'}`}>{day.getDate()}</span>
+                            {/* コスメスタンプ表示エリア */}
+                            <div className="flex-grow flex flex-wrap items-start justify-start gap-1 mt-1 overflow-hidden">
+                                {logForDay.map(cosmetic => (
+                                    <span key={cosmetic.id} title={cosmetic.name} className="text-sm">
+                                      {/* 本番ではここに商品画像<img />を表示 */}
+                                      {cosmetic.emoji}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
         </div>
-        <button onClick={handleSaveLog} className="mt-6 w-full rounded-full bg-coral-pink px-6 py-3 text-white font-semibold shadow hover:opacity-90">この内容で登録する</button>
+
+        {/* Log Input Form */}
+        <div className="bg-white p-5 rounded-2xl shadow-sm self-start">
+            <h2 className="font-bold text-warm-gray">今日のログを記録</h2>
+            <p className="text-sm text-warm-gray-500 mt-1">今日使ったコスメをチェック！</p>
+            <div className="mt-4 space-y-3 max-h-60 overflow-y-auto pr-2">
+                {userCosmetics.map(cosmetic => (
+                    <label key={cosmetic.id} className="flex items-center space-x-3 p-2 rounded-lg hover:bg-cream-yellow">
+                        <input 
+                            type="checkbox" 
+                            checked={!!selectedCosmetics[cosmetic.id]}
+                            onChange={e => setSelectedCosmetics(p => ({...p, [cosmetic.id]: e.target.checked}))}
+                            className="rounded border-yellow-200 text-coral-pink shadow-sm focus:border-coral-pink focus:ring focus:ring-offset-0 focus:ring-coral-pink focus:ring-opacity-50"
+                        />
+                        <span className="text-sm">{cosmetic.emoji} {cosmetic.name}</span>
+                    </label>
+                ))}
+            </div>
+            <button onClick={handleLogSubmit} className="w-full mt-4 bg-coral-pink text-white font-semibold rounded-full py-2.5 shadow hover:opacity-90 transition-opacity">
+                登録する
+            </button>
+        </div>
       </div>
+      {toast && <div className="fixed bottom-10 left-1/2 -translate-x-1/2 rounded-full bg-warm-gray px-5 py-2 text-white shadow-lg text-sm">{toast}</div>}
     </div>
   );
 }
 
-// 簡単なカレンダーコンポーネント
-function Calendar({ date, onDateClick }) {
-    // ... カレンダーのロジック (簡略版) ...
-    const today = new Date();
-    const days = Array.from({ length: 30 }, (_, i) => i + 1);
-
-    return (
-        <div className="mt-4 grid grid-cols-7 gap-1 text-center">
-            {['日', '月', '火', '水', '木', '金', '土'].map(d => <div key={d} className="text-xs text-warm-gray-400">{d}</div>)}
-            {days.map(day => (
-                <button key={day} onClick={() => onDateClick(new Date(date.getFullYear(), date.getMonth(), day))}
-                    className={`p-2 rounded-full aspect-square ${day === today.getDate() ? 'bg-coral-pink text-white' : 'hover:bg-cream-yellow'}`}>
-                    {day}
-                </button>
-            ))}
-        </div>
-    );
-}
